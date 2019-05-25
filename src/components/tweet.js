@@ -1,35 +1,37 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { formatTweet, formatDate } from "../utils/helpers";
+import React, { Component } from "react"
+import { connect } from "react-redux"
+import { formatTweet, formatDate } from "../utils/helpers"
+import { Link, withRouter } from "react-router-dom"
 //icons
-import { TiArrowBackOutline } from "react-icons/ti/index";
-import { TiHeartOutline } from "react-icons/ti/index";
-import { TiHeartFullOutline } from "react-icons/ti/index";
+import { TiArrowBackOutline } from "react-icons/ti/index"
+import { TiHeartOutline } from "react-icons/ti/index"
+import { TiHeartFullOutline } from "react-icons/ti/index"
 //toggletweet
-import { handleToggleTweet } from "../actions/tweets";
+import { handleToggleTweet } from "../actions/tweets"
 class Tweet extends Component {
   handleLike = e => {
-    e.preventDefault();
-    const { dispatch, tweet, authedUser } = this.props;
+    e.preventDefault()
+    const { dispatch, tweet, authedUser } = this.props
     dispatch(
       handleToggleTweet({
         id: tweet.id,
         hasLiked: tweet.hasLiked,
         authedUser
       })
-    );
-  };
+    )
+  }
 
   toParent = (e, id) => {
-    e.preventDefault();
+    e.preventDefault()
+    this.props.history.push(`/tweet/${id}`)
     //todo: redirect to parent tweet
-  };
+  }
   render() {
-    console.log(this.props);
-    const { tweet } = this.props;
+    console.log(this.props)
+    const { tweet } = this.props
 
     if (tweet == null) {
-      return <p>This Tweet doesn't exist !!!</p>;
+      return <p>This Tweet doesn't exist !!!</p>
     }
 
     const {
@@ -40,11 +42,12 @@ class Tweet extends Component {
       hasLiked,
       likes,
       replies,
+      id,
       parent
-    } = tweet;
+    } = tweet
 
     return (
-      <div className="tweet">
+      <Link to={`/tweet/${id}`} className="tweet">
         <img src={avatar} alt={`Avatar of {${name}}`} className={"avatar"} />
 
         <div className="tweet-info">
@@ -74,19 +77,19 @@ class Tweet extends Component {
             <span>{likes !== 0 && likes}</span>
           </div>
         </div>
-      </div>
-    );
+      </Link>
+    )
   }
 }
 
 function mapStateToProps({ authedUser, users, tweets }, { id }) {
-  const tweet = tweets[id];
-  const parentTweet = tweet ? tweets[tweet.replyingTo] : null;
+  const tweet = tweets[id]
+  const parentTweet = tweet ? tweets[tweet.replyingTo] : null
   return {
     authedUser,
     tweet: tweet
       ? formatTweet(tweet, users[tweet.author], authedUser, parentTweet)
       : null
-  };
+  }
 }
-export default connect(mapStateToProps)(Tweet);
+export default withRouter(connect(mapStateToProps)(Tweet))

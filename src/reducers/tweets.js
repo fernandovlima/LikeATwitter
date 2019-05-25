@@ -21,11 +21,11 @@ export default function tweets(state = {}, action) {
     case ADD_TWEET:
       const { tweet } = action;
       let replyingTo = {};
-      if (replyingTo !== null) {
+      if (tweet.replyingTo !== null) {
         replyingTo = {
-          [tweet.replyinTo]: {
-            ...state,
-            replies: state[tweet.replyTo].replies.concat([tweet.id])
+          [tweet.replyingTo]: {
+            ...state[tweet.replyingTo],
+            replies: state[tweet.replyingTo].replies.concat([tweet.id])
           }
         };
       }

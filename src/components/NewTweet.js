@@ -1,32 +1,39 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { handleAddTweet } from "../actions/tweets";
+import React, { Component } from "react"
+import { connect } from "react-redux"
+import { Redirect } from "react-router-dom"
+import { handleAddTweet } from "../actions/tweets"
 
 class NewTweet extends Component {
   state = {
-    text: ""
-  };
+    text: "",
+    toHome: false
+  }
 
   handleChange = e => {
-    const text = e.target.value;
+    const text = e.target.value
 
     this.setState({
       text
-    });
-  };
+    })
+  }
 
   handleSubmit = e => {
-    e.preventDefault();
-    const { text } = this.state;
-    const { dispatch, id } = this.props;
-    dispatch(handleAddTweet(text, id));
+    e.preventDefault()
+    const { text } = this.state
+    const { dispatch, id } = this.props
+    dispatch(handleAddTweet(text, id))
     this.setState({
-      text: ""
-    });
-  };
+      text: "",
+      toHome: id ? false : true
+    })
+  }
   render() {
-    const { text } = this.state;
-    const tweetLength = 280 - text.length;
+    const { text, toHome } = this.state
+    const tweetLength = 280 - text.length
+
+    if (toHome === true) {
+      return <Redirect to="/" />
+    }
     return (
       <div>
         <h2 className="center">Compose New Tweet </h2>
@@ -46,8 +53,8 @@ class NewTweet extends Component {
           </button>
         </form>
       </div>
-    );
+    )
   }
 }
 
-export default connect()(NewTweet);
+export default connect()(NewTweet)
